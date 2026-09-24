@@ -1,13 +1,13 @@
 ### README.md
 
 ```markdown
-# SIALM - Sistema Integrado de Almoxarifado Municipal
+ SIALM - Sistema Integrado de Almoxarifado Municipal
 
 O **SIALM** é uma plataforma desenvolvida para a gestão, controle e rastreabilidade do fluxo de suprimentos, materiais de consumo e bens permanentes da administração pública municipal de Lagoa do Piauí.
 
 ---
 
-## 🏛️ Arquitetura e Estratégia de Operação
+ 🏛️ Arquitetura e Estratégia de Operação
 
 O sistema opera sob uma **arquitetura híbrida e autônoma**, eliminando dependências externas de proxy reverso e garantindo isolamento total de infraestrutura:
 
@@ -17,7 +17,7 @@ O sistema opera sob uma **arquitetura híbrida e autônoma**, eliminando depend�
 
 ---
 
-## 🛠️ Pilha Tecnológica
+ 🛠️ Pilha Tecnológica
 
 * **Backend:** Python 3.10+, FastAPI, Uvicorn, SQLAlchemy.
 * **Banco de Dados:** SQLite (`sialm.db`).
@@ -27,7 +27,7 @@ O sistema opera sob uma **arquitetura híbrida e autônoma**, eliminando depend�
 
 ---
 
-## 📁 Estrutura de Diretórios
+ 📁 Estrutura de Diretórios
 
 ```text
 /home/esdras/sialm/
