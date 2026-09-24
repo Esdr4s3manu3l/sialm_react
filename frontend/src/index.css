@@ -1,39 +1,86 @@
-:root {
-  --bg: #0b1329;
-  --card-bg: #1e293b;
-  --border: #334155;
-  --text-main: #f8fafc;
+/* =========================================================================
+   DESIGN SYSTEM SIALM / CIGM - LIGHT & DARK THEME
+   ========================================================================= */
+
+:root, [data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-input: #ffffff;
+  --bg-hover: #f1f5f9;
+  --bg-active: #e0f2fe;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
   --text-muted: #94a3b8;
-  --primary: #0284c7;
-  --primary-hover: #0369a1;
+  
+  --border-color: #e2e8f0;
+  --border-focus: #0284c7;
+  
+  --brand-primary: #0284c7;
+  --brand-primary-hover: #0369a1;
+  --brand-accent: #0ea5e9;
+  --brand-green: #16a34a;
   --danger: #ef4444;
+  --warning: #f59e0b;
   --success: #22c55e;
+  
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+[data-theme="dark"] {
+  --bg-main: #0b1329;
+  --bg-card: #1e293b;
+  --bg-sidebar: #0f172a;
+  --bg-input: #0f172a;
+  --bg-hover: #1e293b;
+  --bg-active: #0369a1;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --border-color: #334155;
+  --border-focus: #38bdf8;
+  
+  --brand-primary: #0284c7;
+  --brand-primary-hover: #0369a1;
+  --brand-accent: #38bdf8;
+  --brand-green: #22c55e;
+  --danger: #f87171;
+  --warning: #fbbf24;
+  --success: #4ade80;
+  
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 body {
-  background-color: var(--bg);
-  color: var(--text-main);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   min-height: 100vh;
-}
-
-a { color: inherit; text-decoration: none; }
-
-button, input, select, textarea {
-  font-family: inherit;
+  -webkit-font-smoothing: antialiased;
 }
 
 .card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
+  box-shadow: var(--card-shadow);
   padding: 1.25rem;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
@@ -43,27 +90,33 @@ button, input, select, textarea {
 }
 
 .table th, .table td {
-  padding: 0.85rem;
-  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .table th {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--bg-hover);
 }
 
 .form-control {
   width: 100%;
-  padding: 0.6rem 0.8rem;
-  background: #0f172a;
-  border: 1px solid var(--border);
-  color: #fff;
+  padding: 0.6rem 0.85rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
   border-radius: 6px;
+  font-size: 0.88rem;
   outline: none;
 }
 
 .form-control:focus {
-  border-color: var(--primary);
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
 .btn {
@@ -75,10 +128,39 @@ button, input, select, textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
-.btn-primary { background: var(--primary); color: #fff; }
-.btn-primary:hover { background: var(--primary-hover); }
-.btn-secondary { background: #334155; color: #fff; }
-.btn-danger { background: var(--danger); color: #fff; }
+.btn-primary { background-color: var(--brand-primary); color: #fff; }
+.btn-primary:hover { background-color: var(--brand-primary-hover); }
+.btn-secondary { background-color: var(--bg-hover); color: var(--text-primary); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: var(--border-color); }
+.btn-danger { background-color: var(--danger); color: #fff; }
+
+/* REGRAS GLOBAIS DE IMPRESSÃO */
+@media print {
+  .no-print,
+  .assistente-flutuante,
+  #btn-abrir-ana,
+  #janela-chat-ana,
+  aside,
+  header {
+    display: none !important;
+    visibility: hidden !important;
+  }
+}
+
+/* RESPONSIVIDADE MOBILE */
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem !important;
+  }
+  .table th, .table td {
+    padding: 0.6rem 0.5rem !important;
+    font-size: 0.78rem !important;
+  }
+  .btn {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.8rem !important;
+  }
+}

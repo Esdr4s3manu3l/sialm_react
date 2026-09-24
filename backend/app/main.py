@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import bcrypt
+from datetime import datetime
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,11 +9,11 @@ from sqlalchemy.orm import Session
 
 from app.database.connection import engine, Base, get_db, DB_PATH
 from app.database.models import Usuario
-from app.routes import auth, produtos, setores, movimentacoes, relatorios
+from app.routes import auth, produtos, setores, movimentacoes, relatorios, assistente, usuarios, perfil, fornecedores
 
 
 def migrar_colunas_legadas():
-    """Garante a existência de colunas novas em bases de dados existentes."""
+    """Garante a existência de colunas essenciais na base SQLite existente."""
     if not os.path.exists(DB_PATH):
         return
     try:
@@ -37,10 +38,17 @@ def migrar_colunas_legadas():
             if "estoque_minimo" not in colunas_produtos:
                 cursor.execute("ALTER TABLE produtos ADD COLUMN estoque_minimo INTEGER DEFAULT 5")
 
+        # Ajuste na tabela usuarios
+        cursor.execute("PRAGMA table_info(usuarios)")
+        colunas_usuarios = [c[1] for c in cursor.fetchall()]
+        if colunas_usuarios:
+            if "criado_em" not in colunas_usuarios:
+                cursor.execute("ALTER TABLE usuarios ADD COLUMN criado_em TIMESTAMP")
+
         conn.commit()
         conn.close()
     except Exception as e:
-        print(f"[!] Aviso na migração de colunas: {e}")
+        print(f"[!] Aviso na verificação de colunas: {e}")
 
 
 def seed_usuarios():
@@ -50,12 +58,26 @@ def seed_usuarios():
     db: Session = next(get_db())
     try:
         def get_hash(senha: str):
-            return bcrypt.hashpw(senha.encode(), bcrypt.gensalt()).decode()
+            return bcrypt.hashpw(senha.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
         if not db.query(Usuario).filter(Usuario.email == "admin@sialm.local").first():
-            db.add(Usuario(nome="Administrador Geral", email="admin@sialm.local", senha_hash=get_hash("admin123"), perfil="admin"))
+            db.add(Usuario(
+                nome="Administrador Geral",
+                email="admin@sialm.local",
+                senha_hash=get_hash("admin123"),
+                perfil="admin",
+                criado_em=datetime.now()
+            ))
+
         if not db.query(Usuario).filter(Usuario.email == "auditor@sialm.local").first():
-            db.add(Usuario(nome="Auditoria Municipal", email="auditor@sialm.local", senha_hash=get_hash("auditor123"), perfil="auditor"))
+            db.add(Usuario(
+                nome="Auditoria Municipal",
+                email="auditor@sialm.local",
+                senha_hash=get_hash("auditor123"),
+                perfil="auditor",
+                criado_em=datetime.now()
+            ))
+
         db.commit()
     finally:
         db.close()
@@ -82,3 +104,7 @@ app.include_router(produtos.router, prefix="/api/produtos", tags=["Produtos"])
 app.include_router(setores.router, prefix="/api/setores", tags=["Setores"])
 app.include_router(movimentacoes.router, prefix="/api/movimentacoes", tags=["Movimentações"])
 app.include_router(relatorios.router, prefix="/api/relatorios", tags=["Relatórios"])
+app.include_router(assistente.router, prefix="/api/assistente", tags=["Assistente"])
+app.include_router(usuarios.router, prefix="/api/usuarios", tags=["Usuários"])
+app.include_router(perfil.router, prefix="/api/perfil", tags=["Perfil"])
+app.include_router(fornecedores.router, prefix="/api/fornecedores", tags=["Fornecedores"])
