@@ -1,400 +1,427 @@
-### README.md
+# 🏛️ SIALM — Sistema Integrado de Almoxarifado Municipal
 
-```markdown
- SIALM - Sistema Integrado de Almoxarifado Municipal
+<div align="center">
 
-O **SIALM** é uma plataforma desenvolvida para a gestão, controle e rastreabilidade do fluxo de suprimentos, materiais de consumo e bens permanentes da administração pública municipal de Lagoa do Piauí.
+Sistema web para gestão de estoque, movimentações, fornecedores e rastreabilidade de materiais da administração pública municipal.
 
----
+Desenvolvido para a **Prefeitura Municipal de Lagoa do Piauí** utilizando **FastAPI + React + SQLite**.
 
- 🏛️ Arquitetura e Estratégia de Operação
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-07405E?style=for-the-badge&logo=sqlite&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-Systemd-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
-O sistema opera sob uma **arquitetura híbrida e autônoma**, eliminando dependências externas de proxy reverso e garantindo isolamento total de infraestrutura:
-
-* **Convivência com e-SUS PEC:** O sistema opera na porta **`8001`**, não interferindo com as portas `80` e `443` ocupadas pela infraestrutura do e-SUS PEC na rede local.
-* **Distribuição Unificada:** O FastAPI gerencia simultaneamente a API REST (`/api/*`) e os ficheiros estáticos do frontend React compilados (`frontend/dist/`), com mecanismo catch-all para suporte nativo ao React Router sem dependência obrigatória do Nginx.
-* **Persistência Leve e Segura:** SQLite (`sialm.db`) com integridade referencial, migrações automáticas de esquema e criptografia unidirecional com `bcrypt`.
-
----
-
- 🛠️ Pilha Tecnológica
-
-* **Backend:** Python 3.10+, FastAPI, Uvicorn, SQLAlchemy.
-* **Banco de Dados:** SQLite (`sialm.db`).
-* **Segurança:** Hashes de senha `bcrypt`, sanitização de entradas com schemas Pydantic e controle de perfil de acesso (`admin`, `operador`, `auditor`).
-* **Frontend:** React, Tailwind CSS, Vite, Lucide Icons e Axios.
-* **Orquestração de Processos:** Systemd (Linux Service).
+</div>
 
 ---
 
- 📁 Estrutura de Diretórios
+## 📋 Sobre o projeto
+
+O **SIALM (Sistema Integrado de Almoxarifado Municipal)** é uma plataforma desenvolvida para controlar o ciclo completo de materiais de consumo e bens permanentes da administração pública.
+
+O sistema registra entradas e saídas de estoque, controla fornecedores e setores municipais, gera relatórios e mantém um histórico auditável das movimentações.
+
+### Principais funcionalidades
+
+- 📦 Cadastro de produtos e materiais.
+- 🏢 Cadastro de fornecedores.
+- 🏛️ Cadastro de secretarias e setores.
+- 📥 Registro de entradas por Nota Fiscal.
+- 📤 Registro de saídas por setor responsável.
+- 📊 Relatórios gerenciais e exportação.
+- 👤 Controle de usuários por perfil.
+- 🔍 Auditoria completa das movimentações.
+
+---
+
+## ✨ Tecnologias utilizadas
+
+<table>
+<tr>
+<td><strong>Backend</strong></td>
+<td>FastAPI, SQLAlchemy, Uvicorn, Pydantic, bcrypt</td>
+</tr>
+
+<tr>
+<td><strong>Frontend</strong></td>
+<td>React, Vite, Tailwind CSS, Axios, Lucide Icons</td>
+</tr>
+
+<tr>
+<td><strong>Banco de Dados</strong></td>
+<td>SQLite</td>
+</tr>
+
+<tr>
+<td><strong>Infraestrutura</strong></td>
+<td>Systemd (Linux)</td>
+</tr>
+</table>
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto utiliza uma arquitetura simples e independente de Nginx.
+
+<svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" width="100%">
+  <rect x="20" y="70" width="150" height="80" rx="12" fill="#2563EB"/>
+  <text x="95" y="115" fill="white" font-size="16" text-anchor="middle">React + Vite</text>
+  <text x="95" y="135" fill="#DBEAFE" font-size="12" text-anchor="middle">Frontend SPA</text>
+
+  <rect x="305" y="70" width="150" height="80" rx="12" fill="#059669"/>
+  <text x="380" y="110" fill="white" font-size="16" text-anchor="middle">FastAPI</text>
+  <text x="380" y="130" fill="#D1FAE5" font-size="12" text-anchor="middle">API + Static Files</text>
+
+  <rect x="590" y="70" width="150" height="80" rx="12" fill="#0F766E"/>
+  <text x="665" y="110" fill="white" font-size="16" text-anchor="middle">SQLite</text>
+  <text x="665" y="130" fill="#CCFBF1" font-size="12" text-anchor="middle">sialm.db</text>
+
+  <path d="M170 110 L305 110" stroke="#64748B" stroke-width="3"/>
+  <polygon points="305,110 292,102 292,118" fill="#64748B"/>
+
+  <path d="M455 110 L590 110" stroke="#64748B" stroke-width="3"/>
+  <polygon points="590,110 577,102 577,118" fill="#64748B"/>
+</svg>
+
+### Estratégia de operação
+
+- Porta exclusiva **8001**.
+- Compatível com servidores **e-SUS PEC**.
+- FastAPI entrega a API REST e o frontend React compilado.
+- React Router funciona sem proxy reverso.
+
+---
+
+## 📂 Estrutura do projeto
 
 ```text
-/home/esdras/sialm/
+sialm/
 ├── backend/
 │   ├── app/
 │   │   ├── database/
-│   │   │   ├── connection.py    # Conexão SQLite e sessão SQLAlchemy
-│   │   │   └── models.py        # Modelos relacionais das tabelas
-│   │   ├── routes/              # Módulos de rotas (auth, produtos, setores, etc.)
-│   │   ├── schemas.py           # Schemas Pydantic para validação de payload
-│   │   └── main.py              # Inicialização, migração, lifespan e entrega SPA
-│   ├── requirements.txt         # Dependências Python
-│   ├── sialm.db                 # Base de dados relacional ativa
-│   └── venv/                    # Ambiente virtual nativo Linux
-└── frontend/
-    ├── dist/                    # Ficheiros estáticos compilados (produção)
-    │   ├── assets/              # Bundles JS e CSS
-    │   ├── brasao.png           # Brasão do município
-    │   └── index.html           # Ponto de entrada SPA
-    ├── src/                     # Código-fonte React
-    ├── package.json
-    └── vite.config.js
-
+│   │   ├── routes/
+│   │   ├── schemas.py
+│   │   └── main.py
+│   ├── requirements.txt
+│   ├── sialm.db
+│   └── venv/
+│
+├── frontend/
+│   ├── src/
+│   ├── dist/
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
+│
+├── README.md
+├── TUTORIAL.md
+└── MANUTENCAO.md
 ```
 
 ---
 
-## 🚀 Instalação e Configuração
+## 🚀 Instalação
 
-### 1. Compilar o Frontend
-
-No ambiente de desenvolvimento ou no servidor:
+### 1. Clone o repositório
 
 ```bash
-cd /home/esdras/sialm/frontend
-npm install
-npm run build
+git clone https://github.com/SEU-USUARIO/sialm.git
 
+cd sialm
 ```
 
-### 2. Configurar o Backend
-
-No servidor de produção:
+### 2. Backend
 
 ```bash
-cd /home/esdras/sialm/backend
+cd backend
+
 python3 -m venv venv
+
 source venv/bin/activate
+
 pip install --upgrade pip
 pip install -r requirements.txt
-
 ```
 
-### 3. Credenciais Padrão de Inicialização
-
-Na primeira execução, o sistema instancia as credenciais de acesso padrão:
-
-* **Administrador:** `admin@sialm.local` | Senha: `admin123`
-* **Auditor:** `auditor@sialm.local` | Senha: `auditor123`
-
----
-
-## ⚙️ Gestão do Serviço Systemd
-
-O serviço do sistema é controlado pelo ficheiro `/etc/systemd/system/sialm.service`:
+### 3. Frontend
 
 ```bash
-# Iniciar / Parar / Reiniciar o serviço
-sudo systemctl start sialm
-sudo systemctl stop sialm
-sudo systemctl restart sialm
+cd ../frontend
 
-# Monitorizar status e logs operacionais
-sudo systemctl status sialm
-sudo journalctl -u sialm -f
-
+npm install
+npm run build
 ```
 
 ---
 
-## 🌐 Endpoints e Acesso
+## ▶️ Executando o projeto
 
-* **Acesso Web:** `http://<IP_DO_SERVIDOR>:8001`
-* **Diagnóstico de Saúde (Healthcheck):** `http://<IP_DO_SERVIDOR>:8001/api/status`
-* **Documentação Interativa:** `http://<IP_DO_SERVIDOR>:8001/docs`
+### Ambiente de desenvolvimento
 
+**Backend**
+
+```bash
+cd backend
+
+source venv/bin/activate
+
+uvicorn app.main:app --reload
 ```
 
----
-
-### TUTORIAL.md
-
-```markdown
-# Manual Operacional do SIALM
-
-Guia de utilização das funcionalidades do Sistema Integrado de Almoxarifado Municipal.
-
----
-
-## 1. Níveis de Acesso e Permissões
-
-O SIALM categoriza os utilizadores em três perfis operacionais:
-* **Administrador (`admin`):** Acesso completo, parametrização do sistema, cadastro e redefinição de utilizadores, gestão de fornecedores, inventário e relatórios.
-* **Operador (`operador`):** Acesso à movimentação diária (registro de entradas, despachos/saídas por setor e consulta de saldo).
-* **Auditor (`auditor`):** Acesso estritamente de consulta a movimentações, rastreio de transferências e emissão de relatórios gerenciais e balanços.
-
----
-
-## 2. Fluxo de Parametrização Inicial
-
-Antes de registar entradas e saídas, cadastre os nós estruturais na seguinte ordem:
+Servidor disponível em:
 
 ```text
-[1. Fornecedores] ──> [2. Setores / Secretarias] ──> [3. Catálogo de Produtos]
-
+http://localhost:8001
 ```
 
-### A. Cadastro de Fornecedores
-
-1. Aceda ao menu **Fornecedores**.
-2. Clique em **Novo Fornecedor**.
-3. Preencha a Razão Social, CNPJ (obrigatório e único), Telefone e Dados de Contato.
-4. Salve o registo.
-
-### B. Cadastro de Setores e Secretarias
-
-1. Aceda ao menu **Setores**.
-2. Cadastre cada unidade administrativa (ex: *UBS Centro*, *Secretaria Municipal de Educação*, *Almoxarifado Central*).
-3. Informe a Secretaria correspondente e o Servidor Responsável pela retirada.
-
-### C. Cadastro de Produtos e Materiais
-
-1. Aceda ao menu **Produtos**.
-2. Clique em **Cadastrar Produto**.
-3. Forneça a descrição oficial do item, unidade de medida (Fardo, Caixa, Unidade, Litro), Categoria e o **Estoque Mínimo** (valor de gatilho para os alertas de reposição).
-
----
-
-## 3. Gestão Diária de Estoque
-
-### A. Registro de Entradas (Recebimento)
-
-1. Vá para **Movimentações** > **Registrar Entrada**.
-2. Selecione o Fornecedor que realizou a entrega.
-3. Insira o Número da Nota Fiscal (NF) ou Ordem de Fornecimento.
-4. Adicione os itens e as quantidades recebidas.
-5. O saldo físico do produto no sistema será incrementado imediatamente.
-
-### B. Registro de Saídas (Atendimento de Requisições)
-
-1. Vá para **Movimentações** > **Registrar Saída**.
-2. Selecione o **Setor Solicitante** e o responsável pela retirada.
-3. Adicione os produtos e quantidades.
-4. *Validação:* O sistema impede baixas superiores ao saldo real disponível em estoque.
-5. Confirme o registro para decrementar o saldo e gerar o comprovante de saída.
-
----
-
-## 4. Emissão de Relatórios e Auditoria
-
-1. Aceda ao menu **Relatórios**.
-2. **Filtros Disponíveis:**
-* Intervalo de datas.
-* Agrupamento por Secretaria ou Setor específico.
-* Filtro por categoria de produto (ex: Material de Limpeza, Expediente, Farmácia).
-
-
-3. **Exportação:** Clique em **Exportar para Excel (XLSX)** ou **Imprimir (PDF)** para obter as folhas de consolidação com o brasão oficial municipal no cabeçalho.
-
----
-
-## 5. Gestão de Contas de Utilizadores (Exclusivo Admin)
-
-1. No menu lateral, aceda a **Usuários**.
-2. Crie novas credenciais para os operadores municipais associando e-mail, nome e perfil.
-3. Para redefinir a senha de um operador que a tenha esquecido, clique no botão de edição do usuário e defina a nova chave de acesso.
-
-```
-
----
-
-### MANUTENCAO.md
-
-```markdown
-# Guia de Manutenção, Diagnóstico e Resolução de Problemas
-
-Manual de suporte técnico e sustentação da infraestrutura do SIALM.
-
----
-
-## 1. Rotinas Preventivas Obrigatórias
-
-### A. Backup Diário Automatizado do Banco SQLite
-Como o banco reside no ficheiro `sialm.db`, backups consistentes devem ser executados através da API de backup do SQLite (evitando copiar ficheiros com escritas ativas).
-
-Crie o script em `/home/esdras/backup_sialm.sh`:
-```bash
-#!/bin/bash
-DATA=$(date +%Y%m%d_%H%M%S)
-ORIGEM="/home/esdras/sialm/backend/sialm.db"
-DESTINO="/home/esdras/backups_sialm"
-
-mkdir -p $DESTINO
-sqlite3 "$ORIGEM" ".backup '$DESTINO/sialm_backup_$DATA.db'"
-# Mantém apenas os últimos 30 backups
-find $DESTINO -type f -name "sialm_backup_*.db" -mtime +30 -delete
-
-```
-
-Torne-o executável e adicione à cron:
+**Frontend**
 
 ```bash
-chmod +x /home/esdras/backup_sialm.sh
-crontab -e
-# Executa todos os dias às 22:00
-0 22 * * * /home/esdras/backup_sialm.sh
-
-```
-
----
-
-## 2. Resolução de Incidentes Comuns (Troubleshooting)
-
-### Falha 1: Erro `[Errno 98] Address already in use` (Porta 8001 Travada)
-
-* **Sintoma:** O serviço entra em loop de reinicialização (`activating (auto-restart)`).
-* **Causa:** Processo anterior do Uvicorn ou Python não foi encerrado corretamente e segura o socket TCP.
-* **Resolução:**
-```bash
-sudo systemctl stop sialm
-sudo fuser -k 8001/tcp
-sudo pkill -9 -f uvicorn
-sudo systemctl start sialm
-
-```
-
-
-
----
-
-### Falha 2: Erro `203/EXEC` no Status do Systemd
-
-* **Sintoma:** O systemd falha imediatamente ao iniciar com o código `status=203/EXEC`.
-* **Causa:** O ambiente virtual `venv` foi movido, copiado do Windows ou o caminho do interpretador Python está corrompido.
-* **Resolução:**
-```bash
-cd /home/esdras/sialm/backend
-rm -rf venv
-python3 -m venv venv
-source venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
-chmod -R 755 venv/bin
-sudo systemctl restart sialm
-
-```
-
-
-
----
-
-### Falha 3: Navegador exibe `{"detail":"Not Found"}` na raiz `/`
-
-* **Sintoma:** O backend responde, mas a tela visual do React não carrega.
-* **Causa:** A pasta `frontend/dist` está ausente, incompleta ou sem permissão de leitura.
-* **Resolução:**
-1. Verifique se o ficheiro `index.html` existe no caminho:
-```bash
-ls -la /home/esdras/sialm/frontend/dist/index.html
-
-```
-
-
-2. Caso não exista, recompile o projeto:
-```bash
-cd /home/esdras/sialm/frontend
-npm run build
-
-```
-
-
-3. Ajuste as permissões de leitura:
-```bash
-chmod -R 755 /home/esdras/sialm/frontend/dist
-sudo systemctl restart sialm
-
-```
-
-
-
-
-
----
-
-### Falha 4: Erro de Permissão no Banco `PermissionError: [Errno 13]`
-
-* **Sintoma:** O sistema abre o login, mas ao tentar autenticar ou gravar dados ocorre erro 500.
-* **Causa:** O ficheiro `sialm.db` ou o diretório `backend` ficou com permissão restrita a outro utilizador (ex: `root`).
-* **Resolução:**
-```bash
-sudo chown -R esdras:www-data /home/esdras/sialm/backend
-chmod 775 /home/esdras/sialm/backend
-chmod 664 /home/esdras/sialm/backend/sialm.db
-# Se existirem ficheiros temporários bloqueados:
-rm -f /home/esdras/sialm/backend/sialm.db-journal
-rm -f /home/esdras/sialm/backend/sialm.db-wal
-sudo systemctl restart sialm
-
-```
-
-
-
----
-
-### Falha 5: Redefinição Emergencial da Senha do Administrador
-
-Caso o acesso à conta principal seja perdido, redefina o hash diretamente via terminal:
-
-```bash
-cd /home/esdras/sialm/backend
-source venv/bin/activate
-
-python3 -c "
-import sqlite3, bcrypt
-conn = sqlite3.connect('sialm.db')
-c = conn.cursor()
-novo_hash = bcrypt.hashpw('admin123'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-c.execute(\"UPDATE usuarios SET senha_hash = ?, perfil = 'admin' WHERE email = 'admin@sialm.local'\", (novo_hash,))
-conn.commit()
-conn.close()
-print('[OK] Senha de admin@sialm.local redefinida para admin123')
-"
-
-```
-
----
-
-## 3. Procedimento Padrão para Atualização do Sistema (Deploy)
-
-Sempre que novas funcionalidades forem adicionadas ao repositório Git, execute a atualização sem indisponibilidade:
-
-```bash
-# 1. Parar o serviço antes de sincronizar
-sudo systemctl stop sialm
-
-# 2. Atualizar o código do repositório
-cd /home/esdras/sialm
-git pull origin main
-
-# 3. Se houver alterações no frontend, compilar nova versão
 cd frontend
-npm install
+
+npm run dev
+```
+
+Servidor Vite:
+
+```text
+http://localhost:5173
+```
+
+---
+
+### Ambiente de produção
+
+Compile o frontend:
+
+```bash
+cd frontend
+
 npm run build
+```
 
-# 4. Se houver alterações no backend, atualizar bibliotecas
+Inicie o backend:
+
+```bash
 cd ../backend
+
 source venv/bin/activate
-pip install -r requirements.txt
 
-# 5. Ajustar permissões e reiniciar o serviço
-sudo chown -R esdras:www-data /home/esdras/sialm
-chmod -R 755 /home/esdras/sialm/frontend/dist
+uvicorn app.main:app --host 0.0.0.0 --port 8001
+```
+
+---
+
+## ⚙️ Serviço Systemd (Produção)
+
+Arquivo:
+
+```text
+/etc/systemd/system/sialm.service
+```
+
+Comandos úteis:
+
+```bash
 sudo systemctl start sialm
+sudo systemctl stop sialm
+sudo systemctl restart sialm
+
 sudo systemctl status sialm
-
+sudo journalctl -u sialm -f
 ```
 
+---
+
+## 🌐 Endpoints da API
+
+| Endpoint | Descrição |
+|----------|-----------|
+| `/api/status` | Health Check |
+| `/api/auth/login` | Autenticação |
+| `/api/produtos` | Produtos |
+| `/api/setores` | Setores |
+| `/api/fornecedores` | Fornecedores |
+| `/api/movimentacoes` | Entradas e saídas |
+| `/docs` | Swagger UI |
+| `/redoc` | Documentação ReDoc |
+
+---
+
+## 🔐 Perfis de acesso
+
+<table>
+<tr>
+  <th>Perfil</th>
+  <th>Permissões</th>
+</tr>
+
+<tr>
+<td>Administrador</td>
+<td>Controle total do sistema, usuários, estoque, fornecedores e relatórios.</td>
+</tr>
+
+<tr>
+<td>Operador</td>
+<td>Entradas, saídas e consulta de estoque.</td>
+</tr>
+
+<tr>
+<td>Auditor</td>
+<td>Consulta, rastreamento e emissão de relatórios.</td>
+</tr>
+
+</table>
+
+### Credenciais iniciais (primeira execução)
+
+> **Recomendação:** altere as senhas imediatamente após instalar.
+
+| Usuário | Senha |
+|---------|--------|
+| `admin@sialm.local` | `admin123` |
+| `auditor@sialm.local` | `auditor123` |
+
+---
+
+## 🔒 Segurança
+
+O sistema utiliza:
+
+- Hash de senhas com **bcrypt**.
+- Validação de payloads com **Pydantic**.
+- Controle de acesso baseado em perfis.
+- Integridade referencial do banco SQLite.
+- Migração automática do esquema na inicialização.
+
+---
+
+## 📊 Fluxo operacional
+
+<svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg" width="100%">
+  <defs>
+    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+      <polygon points="0 0, 6 3, 0 6" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  {#each [
+      {x:20,label:"Fornecedor"},
+      {x:180,label:"Entrada (NF)"},
+      {x:340,label:"Estoque"},
+      {x:500,label:"Saída"},
+      {x:640,label:"Setor"}
+    ] as step}
+    <rect x={step.x} y=30 width=110 height=50 rx=10 fill="#E2E8F0" stroke="#94A3B8"/>
+    <text x={step.x+55} y=60 text-anchor=middle font-size=12 fill="#1E293B">{step.label}</text>
+  {/each}
+
+  {#each [130,290,450,610] as x}
+    <path d={`M ${x} 55 L ${x+50} 55`} stroke="#64748B" stroke-width=2 marker-end="url(#arrow)"/>
+  {/each}
+</svg>
+
+1. Cadastro de fornecedores.
+2. Registro da Nota Fiscal.
+3. Entrada automática no estoque.
+4. Saída para setor solicitante.
+5. Histórico disponível para auditoria.
+
+---
+
+## 📦 Banco de dados
+
+O banco principal é um arquivo SQLite.
+
+```text
+backend/sialm.db
 ```
 
+Características:
+
+- Banco embarcado.
+- Sem dependência de SGBD externo.
+- Fácil backup e restauração.
+- Compatível com migração automática.
+
+---
+
+## 💾 Backup recomendado
+
+Backup consistente utilizando a API do SQLite:
+
+```bash
+sqlite3 sialm.db ".backup 'backup.db'"
 ```
+
+Exemplo de automação diária disponível em **MANUTENCAO.md**.
+
+---
+
+## 📚 Documentação adicional
+
+| Documento | Conteúdo |
+|-----------|----------|
+| `TUTORIAL.md` | Manual do usuário e fluxo operacional. |
+| `MANUTENCAO.md` | Backup, deploy e troubleshooting. |
+
+---
+
+## 🛣️ Roadmap
+
+- [x] Autenticação por perfis.
+- [x] Cadastro de produtos.
+- [x] Controle de fornecedores.
+- [x] Movimentações de estoque.
+- [x] Relatórios.
+- [ ] Dashboard com indicadores.
+- [ ] Exportação PDF avançada.
+- [ ] Inventário patrimonial.
+- [ ] Alertas de estoque mínimo.
+- [ ] Histórico de alterações por usuário.
+
+---
+
+## 🤝 Contribuição
+
+1. Faça um Fork.
+2. Crie uma branch.
+
+```bash
+git checkout -b feature/nova-funcionalidade
+```
+
+3. Commit das alterações.
+
+```bash
+git commit -m "feat: adiciona nova funcionalidade"
+```
+
+4. Envie para seu fork.
+
+```bash
+git push origin feature/nova-funcionalidade
+```
+
+5. Abra um Pull Request.
+
+---
+
+## 👨‍💻 Autor
+
+**Esdras Emanuel Marques da Silva**
+
+Analista de Suporte Técnico • Prefeitura Municipal de Lagoa do Piauí
+
+Projeto desenvolvido para modernizar a gestão do almoxarifado municipal utilizando tecnologias open source.
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença **MIT**.
+
+Veja o arquivo **LICENSE** para mais informações.
