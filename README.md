@@ -299,37 +299,62 @@ O sistema utiliza:
 
 ---
 
-## 📊 Fluxo operacional
+## 📊 Fluxo Operacional
 
-<svg viewBox="0 0 760 120" xmlns="http://www.w3.org/2000/svg" width="100%">
+O fluxo de movimentação do estoque segue uma sequência única, garantindo rastreabilidade desde o recebimento até a entrega ao setor solicitante.
+
+<div align="center">
+
+<svg width="100%" viewBox="0 0 760 140" xmlns="http://www.w3.org/2000/svg">
+
   <defs>
-    <marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-      <polygon points="0 0, 6 3, 0 6" fill="#64748B"/>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748B"/>
     </marker>
   </defs>
 
-  {#each [
-      {x:20,label:"Fornecedor"},
-      {x:180,label:"Entrada (NF)"},
-      {x:340,label:"Estoque"},
-      {x:500,label:"Saída"},
-      {x:640,label:"Setor"}
-    ] as step}
-    <rect x={step.x} y=30 width=110 height=50 rx=10 fill="#E2E8F0" stroke="#94A3B8"/>
-    <text x={step.x+55} y=60 text-anchor=middle font-size=12 fill="#1E293B">{step.label}</text>
-  {/each}
+  <!-- Fornecedor -->
+  <rect x="20" y="35" width="110" height="50" rx="10" fill="#16A34A"/>
+  <text x="75" y="65" text-anchor="middle" fill="white" font-size="13" font-family="Arial">Fornecedor</text>
 
-  {#each [130,290,450,610] as x}
-    <path d={`M ${x} 55 L ${x+50} 55`} stroke="#64748B" stroke-width=2 marker-end="url(#arrow)"/>
-  {/each}
+  <!-- Entrada -->
+  <rect x="170" y="35" width="120" height="50" rx="10" fill="#2563EB"/>
+  <text x="230" y="60" text-anchor="middle" fill="white" font-size="13" font-family="Arial">Entrada</text>
+  <text x="230" y="74" text-anchor="middle" fill="#DBEAFE" font-size="11" font-family="Arial">Nota Fiscal</text>
+
+  <!-- Estoque -->
+  <rect x="340" y="35" width="110" height="50" rx="10" fill="#EA580C"/>
+  <text x="395" y="65" text-anchor="middle" fill="white" font-size="13" font-family="Arial">Estoque</text>
+
+  <!-- Saída -->
+  <rect x="500" y="35" width="110" height="50" rx="10" fill="#DC2626"/>
+  <text x="555" y="65" text-anchor="middle" fill="white" font-size="13" font-family="Arial">Saída</text>
+
+  <!-- Setor -->
+  <rect x="640" y="35" width="100" height="50" rx="10" fill="#7C3AED"/>
+  <text x="690" y="65" text-anchor="middle" fill="white" font-size="13" font-family="Arial">Setor</text>
+
+  <!-- Conexões -->
+  <line x1="130" y1="60" x2="170" y2="60" stroke="#64748B" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="290" y1="60" x2="340" y2="60" stroke="#64748B" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="450" y1="60" x2="500" y2="60" stroke="#64748B" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="610" y1="60" x2="640" y2="60" stroke="#64748B" stroke-width="2.5" marker-end="url(#arrow)"/>
+
 </svg>
 
-1. Cadastro de fornecedores.
-2. Registro da Nota Fiscal.
-3. Entrada automática no estoque.
-4. Saída para setor solicitante.
-5. Histórico disponível para auditoria.
+</div>
 
+### Etapas do fluxo
+
+| Etapa | Descrição |
+|-------|-----------|
+| **1. Fornecedor** | Cadastro do fornecedor responsável pela entrega dos materiais. |
+| **2. Entrada (NF)** | Registro da Nota Fiscal e das quantidades recebidas. |
+| **3. Estoque** | Atualização automática do saldo físico dos produtos. |
+| **4. Saída** | Baixa dos itens para atendimento das requisições dos setores municipais. |
+| **5. Setor** | Entrega ao setor solicitante com rastreabilidade do responsável e da movimentação. |
+
+> Todo o histórico de entradas e saídas permanece registrado para fins de auditoria, relatórios e controle patrimonial.
 ---
 
 ## 📦 Banco de dados
